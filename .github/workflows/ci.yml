@@ -1,0 +1,73 @@
+name: PA3 CI Pipeline
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: [self-hosted, linux]
+    container: ubuntu:latest
+    timeout-minutes: 5
+    steps:
+      - name: Install build dependencies
+        run: |
+          apt update
+          apt install -y build-essential cmake
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure and build project
+        run: |
+          cmake -S . -B build
+          cmake --build build
+
+  test:
+    runs-on: [self-hosted, linux]
+    container: ubuntu:latest
+    timeout-minutes: 5
+    steps:
+      - name: Install test dependencies
+        run: |
+          apt update
+          apt install -y build-essential cmake libgtest-dev
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build and run tests
+        run: |
+          cmake -S . -B build
+          cmake --build build
+          cd build && ctest --output-on-failure
+
+  lint:
+    runs-on: [self-hosted, linux]
+    container: ubuntu:latest
+    timeout-minutes: 3
+    steps:
+      - name: Install linter
+        run: |
+          apt update
+          apt install -y clang-tidy
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run clang-tidy
+        run: clang-tidy PA3.cpp Main.cpp -- -std=c++17
+
+  docker:
+    runs-on: [self-hosted, linux]
+    container: ubuntu:latest
+    timeout-minutes: 5
+    steps:
+      - name: Install Docker CLI
+        run: |
+          apt update
+          apt install -y docker.io
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t pa3-project .
