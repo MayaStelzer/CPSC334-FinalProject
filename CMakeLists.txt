@@ -6,7 +6,10 @@ project(PA3)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Wall")
 
-# create main executable
+# Add root directory as include path
+include_directories(${CMAKE_SOURCE_DIR})
+
+# Main executable
 add_executable(runPA3 Main.cpp PA3.cpp)
 
 # Fetch GoogleTest
