@@ -5,7 +5,6 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: [self-hosted, linux]
-    container: ubuntu:latest
     timeout-minutes: 3
     steps:
       - name: Install build dependencies
@@ -23,7 +22,6 @@ jobs:
 
   test:
     runs-on: [self-hosted, linux]
-    container: ubuntu:latest
     timeout-minutes: 5
     steps:
       - name: Install test dependencies
@@ -42,7 +40,6 @@ jobs:
 
   lint:
     runs-on: [self-hosted, linux]
-    container: ubuntu:latest
     timeout-minutes: 3
     steps:
       - name: Install linter
