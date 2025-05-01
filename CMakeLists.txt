@@ -6,12 +6,20 @@ project(PA3)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Wall")
 
-# make an automatic library
-add_library(pa_library ${PROJECT_NAME}.cpp ${PROJECT_NAME}.h)
-
-# create unit test executable
-add_subdirectory(test)
-
 # create main executable
-add_executable(run${PROJECT_NAME} Main.cpp ${PROJECT_NAME}.cpp)
+add_executable(runPA3 Main.cpp PA3.cpp)
 
+# Fetch GoogleTest
+include(FetchContent)
+FetchContent_Declare(
+  googletest
+  URL https://github.com/google/googletest/archive/release-1.12.1.zip
+)
+FetchContent_MakeAvailable(googletest)
+enable_testing()
+
+# Unit test executable
+add_executable(testPA3 test/test_PA3.cpp PA3.cpp)
+target_link_libraries(testPA3 gtest_main)
+include(GoogleTest)
+gtest_discover_tests(testPA3)
