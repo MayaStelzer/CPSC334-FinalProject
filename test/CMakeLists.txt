@@ -6,8 +6,8 @@ include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 target_include_directories(pa_library PUBLIC ../)
 
 # tests have their own executable
-add_executable(runTests Test.cpp)
+add_executable(runPA3 Main.cpp PA3.cpp)
+add_executable(testPA3 test/test_PA3.cpp PA3.cpp)
 
 # linked to main library and google test
-target_link_libraries(runTests pa_library gtest gtest_main)
-
+target_link_libraries(testPA3 gtest_main)
