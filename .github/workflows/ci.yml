@@ -87,6 +87,7 @@ jobs:
 
 
           apt update
+          apt remove -y containerd
           apt install -y docker-ce docker-ce-cli containerd docker-buildx-plugin
 
       - name: Set up SSH key
