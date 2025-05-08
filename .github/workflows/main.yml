@@ -75,39 +75,39 @@ jobs:
         run: |
           clang-tidy -p . PA4.cpp Main.cpp || true
 
-deploy:
-  name: Deploy to Remote VM
-  runs-on: self-hosted
-  needs: [test, lint]
-  timeout-minutes: 10
+  deploy:
+    name: Deploy to Remote VM
+    runs-on: self-hosted
+    needs: [test, lint]
+    timeout-minutes: 10
 
-  steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Build Docker image
-      run: docker build -t pa4-app .
+      - name: Build Docker image
+        run: docker build -t pa4-app .
 
-    - name: Save Docker image as tarball
-      run: |
-        mkdir -p artifacts
-        docker save pa4-app > artifacts/pa4-app.tar
+      - name: Save Docker image as tarball
+        run: |
+          mkdir -p artifacts
+          docker save pa4-app > artifacts/pa4-app.tar
 
-    - name: Set up SSH key
-      run: |
-        mkdir -p ~/.ssh
-        echo "${{ secrets.REMOTE_SSH_KEY }}" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
+      - name: Set up SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.REMOTE_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
 
-    - name: Copy image to remote VM
-      run: |
-        scp -i ~/.ssh/id_rsa artifacts/pa4-app.tar ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}:/tmp/pa4-app.tar
+      - name: Copy image to remote VM
+        run: |
+          scp -i ~/.ssh/id_rsa artifacts/pa4-app.tar ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}:/tmp/pa4-app.tar
 
-    - name: Run container on remote VM
-      run: |
-        ssh -i ~/.ssh/id_rsa ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} << 'EOF'
-          docker load < /tmp/pa4-app.tar
-          docker stop pa4-app || true
-          docker rm pa4-app || true
-          docker run -d --name pa4-app pa4-app
-        EOF
+      - name: Run container on remote VM
+        run: |
+          ssh -i ~/.ssh/id_rsa ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} << 'EOF'
+            docker load < /tmp/pa4-app.tar
+            docker stop pa4-app || true
+            docker rm pa4-app || true
+            docker run -d --name pa4-app pa4-app
+          EOF
