@@ -1,0 +1,11 @@
+all: build
+
+build:
+	cmake -S . -B build
+	cmake --build build
+
+test:
+	./build/tests
+
+clean:
+	rm -rf build

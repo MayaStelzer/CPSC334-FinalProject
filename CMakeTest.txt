@@ -1,0 +1,17 @@
+cmake_minimum_required(VERSION 3.10)
+
+project(PA4)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
+
+# Include source files
+add_library(pa_library PA4.cpp PA4.h)
+
+# Add main executable
+add_executable(runPA4 Main.cpp)
+target_link_libraries(runPA4 pa_library)
+
+# Add test directory (builds and runs tests)
+add_subdirectory(test)

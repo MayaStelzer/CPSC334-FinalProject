@@ -1,0 +1,60 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-test-package:
+    runs-on: self-hosted  # This targets your self-hosted runner VM
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            cmake \
+            g++ \
+            clang-tidy \
+            libgtest-dev \
+            libpthread-stubs0-dev \
+            docker.io
+
+      - name: Build GTest manually
+        run: |
+          cd /usr/src/gtest
+          sudo cmake .
+          sudo make
+          sudo cp lib/*.a /usr/lib
+
+      - name: Configure CMake project
+        run: cmake -S . -B build
+
+      - name: Build
+        run: cmake --build build
+
+      - name: Run unit tests
+        run: ./build/runTests
+
+      - name: Run clang-tidy (lint)
+        run: clang-tidy PA4.cpp -- -I.
+
+      - name: Build Docker image
+        run: docker build -t pa4-app .
+
+      - name: Save Docker image as artifact
+        run: |
+          docker save pa4-app > pa4-app.tar
+          mkdir -p artifacts
+          mv pa4-app.tar artifacts/
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: docker-image
+          path: artifacts/pa4-app.tar
