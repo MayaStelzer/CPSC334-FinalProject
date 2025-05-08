@@ -104,12 +104,4 @@ jobs:
           scp -i ~/.ssh/id_rsa artifacts/pa4-app.tar ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}:/tmp/pa4-app.tar
 
       - name: Run container on remote VM
-        run: |
-          ssh -i ~/.ssh/id_rsa ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} << 'EOF'
-            docker load < /tmp/pa4-app.tar
-            docker stop pa4-app || true
-            docker rm pa4-app || true
-            docker run -d --name pa4-app pa4-app
-          EOF
-
-          
+        run: docker run -d --name pa4-app pa4-app ./build/runPA4
