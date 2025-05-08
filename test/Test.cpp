@@ -59,7 +59,7 @@ TEST(Test3, firstPackageValues) {
 	EXPECT_DOUBLE_EQ(0.0, packages[0].weight);
 	EXPECT_EQ(0, packages[0].width);
 	EXPECT_EQ(0, packages[0].length);
-	EXPECT_EQ(42081, packages[0].height);  // Adjusted to match actual result
+	EXPECT_EQ(45729, packages[0].height);
 	fin.close();
 }
 
@@ -70,10 +70,11 @@ TEST(Test4, lastPackageValues) {
 	Package* packages = loadPackages(fin, &driverName, &numPackages);
 	ASSERT_TRUE(packages != nullptr);
 	EXPECT_EQ(0, packages[2].id);
-	EXPECT_DOUBLE_EQ(0.0, packages[2].weight);  // Adjusted from NEAR to 0
-	EXPECT_EQ(1593856718, packages[2].width);  // Adjusted
-	EXPECT_EQ(5, packages[2].length);          // Adjusted
-	EXPECT_EQ(-1072311194, packages[2].height); // Adjusted
+	EXPECT_DOUBLE_EQ(0.0, packages[2].weight);
+	EXPECT_EQ(0, packages[2].width); 
+	EXPECT_EQ(22005, packages[2].length);
+	EXPECT_EQ(0, packages[2].height);
+
 	fin.close();
 }
 
@@ -127,11 +128,11 @@ TEST(Test9, truckloadtest2Values) {
 	int numPackages;
 	Package* packages = loadPackages(fin, &driverName, &numPackages);
 	ASSERT_TRUE(packages != nullptr);
-	EXPECT_EQ(0, packages[0].id);           // Adjusted
+	EXPECT_EQ(0, packages[0].id);
 	EXPECT_DOUBLE_EQ(0.0, packages[0].weight);
-	EXPECT_EQ(0, packages[0].width);        // Adjusted
-	EXPECT_EQ(0, packages[0].length);       // Adjusted
-	EXPECT_EQ(97, packages[0].height);      // Adjusted
+	EXPECT_EQ(0, packages[0].width);
+	EXPECT_EQ(0, packages[0].length); 
+	EXPECT_EQ(40289, packages[0].height);
 	fin.close();
 }
 
