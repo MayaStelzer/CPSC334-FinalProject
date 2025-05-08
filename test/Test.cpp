@@ -63,7 +63,7 @@ TEST(Test3, firstPackageValues) {
 	fin.close();
 }
 
-TEST(Test2, computePackageStats) {
+TEST(Test4, computePackageStats) {
 	Package packages1[] = {
 		{1, 2, 3, 4, 5}
 	};
@@ -136,7 +136,7 @@ TEST(Test8, differentDimensions) {
 	EXPECT_EQ(6, p.height);
 }
 
-TEST(Test2, computePackageStats) {
+TEST(Test9, computePackageStats) {
 	Package packages1[] = {
 		{1, 2, 3, 4, 5}
 	};
