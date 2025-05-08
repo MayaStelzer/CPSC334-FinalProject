@@ -1,48 +1,88 @@
 name: CI Pipeline
 
-on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+on: [push, pull_request]
 
 jobs:
-  build-test-package:
-    runs-on: self-hosted  # This targets your self-hosted runner VM
+  build:
+    name: Build
+    runs-on: self-hosted
+    timeout-minutes: 5
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y \
-            cmake \
-            g++ \
-            clang-tidy \
-            libgtest-dev \
-            libpthread-stubs0-dev \
-            docker.io
+          sudo apt-get install -y cmake g++ libgtest-dev libpthread-stubs0-dev
 
-      - name: Build GTest manually
+      - name: Build GTest
         run: |
           cd /usr/src/gtest
           sudo cmake .
           sudo make
           sudo cp lib/*.a /usr/lib
 
-      - name: Configure CMake project
+      - name: Configure CMake
         run: cmake -S . -B build
 
-      - name: Build
+      - name: Build project
         run: cmake --build build
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-output
+          path: build/
+
+  test:
+    name: Test
+    runs-on: self-hosted
+    needs: build
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: build-output
+          path: build
 
       - name: Run unit tests
         run: ./build/runTests
 
-      - name: Run clang-tidy (lint)
-        run: clang-tidy PA4.cpp -- -I.
+  lint:
+    name: Lint
+    runs-on: self-hosted
+    needs: build
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install Clang-Tidy
+        run: sudo apt-get install -y clang-tidy
+
+      - name: Run Clang-Tidy
+        run: clang-tidy PA4.cpp PA4.h Main.cpp -- -I.
+
+  deploy:
+    name: Deploy
+    runs-on: self-hosted
+    needs: [test, lint]
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install Docker
+        run: sudo apt-get install -y docker.io
 
       - name: Build Docker image
         run: docker build -t pa4-app .
@@ -53,7 +93,7 @@ jobs:
           mkdir -p artifacts
           mv pa4-app.tar artifacts/
 
-      - name: Upload artifact
+      - name: Upload Docker image
         uses: actions/upload-artifact@v3
         with:
           name: docker-image
