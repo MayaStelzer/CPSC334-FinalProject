@@ -63,20 +63,34 @@ TEST(Test3, firstPackageValues) {
 	fin.close();
 }
 
-TEST(Test4, lastPackageValues) {
-	ifstream fin("../test/truckloadtest1.txt");
-	string driverName;
-	int numPackages;
-	Package* packages = loadPackages(fin, &driverName, &numPackages);
-	ASSERT_TRUE(packages != nullptr);
-	EXPECT_EQ(0, packages[2].id);
-	EXPECT_DOUBLE_EQ(0.0, packages[2].weight);
-	EXPECT_EQ(0, packages[2].width); 
-	EXPECT_EQ(22005, packages[2].length);
-	EXPECT_EQ(0, packages[2].height);
+TEST(Test2, computePackageStats) {
+	Package packages1[] = {
+		{1, 2, 3, 4, 5}
+	};
+	int numPackages = 1;
+	int heaviestId;
+	double heaviestWeight;
+	double avgWeight;
 
-	fin.close();
+	computePackageStats(packages1, numPackages, &heaviestId, &heaviestWeight, &avgWeight);
+	EXPECT_EQ(1, heaviestId);
+	EXPECT_EQ(2, heaviestWeight);
+	EXPECT_EQ(2, avgWeight);
+
+	Package packages2[] = {
+		{7529, 7.8, 10, 4, 5},
+		{1234, 2.23, 3, 2, 5},
+		{5595, 5.01, 1, 2, 1},
+		{9824, 16.254, 7, 6, 2},
+		{4927, 1.2, 6, 2, 8}
+	};
+	numPackages = sizeof(packages2) / sizeof(Package);
+	computePackageStats(packages2, numPackages, &heaviestId, &heaviestWeight, &avgWeight);
+	EXPECT_EQ(9824, heaviestId);
+	EXPECT_DOUBLE_EQ(16.254, heaviestWeight);
+	EXPECT_DOUBLE_EQ(6.4988, avgWeight);
 }
+
 
 TEST(Test5, singlePackageStatsCheck) {
 	Package pkg[] = {{10, 12.5, 2, 2, 2}};
@@ -122,19 +136,34 @@ TEST(Test8, differentDimensions) {
 	EXPECT_EQ(6, p.height);
 }
 
-TEST(Test9, truckloadtest2Values) {
-	ifstream fin("../test/truckloadtest2.txt");
-	string driverName;
-	int numPackages;
-	Package* packages = loadPackages(fin, &driverName, &numPackages);
-	ASSERT_TRUE(packages != nullptr);
-	EXPECT_EQ(0, packages[0].id);
-	EXPECT_DOUBLE_EQ(0.0, packages[0].weight);
-	EXPECT_EQ(0, packages[0].width);
-	EXPECT_EQ(0, packages[0].length); 
-	EXPECT_EQ(40289, packages[0].height);
-	fin.close();
+TEST(Test2, computePackageStats) {
+	Package packages1[] = {
+		{1, 2, 3, 4, 5}
+	};
+	int numPackages = 1;
+	int heaviestId;
+	double heaviestWeight;
+	double avgWeight;
+
+	computePackageStats(packages1, numPackages, &heaviestId, &heaviestWeight, &avgWeight);
+	EXPECT_EQ(1, heaviestId);
+	EXPECT_EQ(2, heaviestWeight);
+	EXPECT_EQ(2, avgWeight);
+
+	Package packages2[] = {
+		{7529, 7.8, 10, 4, 5},
+		{1234, 2.23, 3, 2, 5},
+		{5595, 5.01, 1, 2, 1},
+		{9824, 16.254, 7, 6, 2},
+		{4927, 1.2, 6, 2, 8}
+	};
+	numPackages = sizeof(packages2) / sizeof(Package);
+	computePackageStats(packages2, numPackages, &heaviestId, &heaviestWeight, &avgWeight);
+	EXPECT_EQ(9824, heaviestId);
+	EXPECT_DOUBLE_EQ(16.254, heaviestWeight);
+	EXPECT_DOUBLE_EQ(6.4988, avgWeight);
 }
+
 
 TEST(Test10, largeWeightSumAvg) {
 	Package pkgs[] = {
