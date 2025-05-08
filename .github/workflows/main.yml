@@ -36,7 +36,7 @@ jobs:
           name: build-output
           path: build/
 
-  test:
+    test:
     name: Test
     runs-on: self-hosted
     needs: build
@@ -51,6 +51,9 @@ jobs:
         with:
           name: build-output
           path: build
+
+      - name: Make runTests executable
+        run: chmod +x ./build/test/runTests
 
       - name: Run unit tests
         run: ./build/test/runTests
